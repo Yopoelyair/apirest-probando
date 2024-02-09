@@ -10,6 +10,7 @@
 const { Router } = require('express');
 const router = Router();
 const _ = require('underscore');
+const fs = require('fs');
 
 
 // Se carga la lista de empleados desde un archivo JSON

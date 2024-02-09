@@ -1,14 +1,7 @@
-/**
- * Este módulo define una ruta para manejar la subida de archivos utilizando el paquete 'multer'.
- * Utiliza el paquete 'express' para crear un enrutador y define una ruta POST en la raíz (/) para manejar las solicitudes de subida de archivos.
- * Configura el almacenamiento de archivos utilizando el método 'diskStorage' de 'multer', especificando el directorio de destino y el nombre del archivo.
- * Utiliza el middleware 'upload.single()' de 'multer' para procesar la solicitud y subir un solo archivo con el campo de entrada denominado 'file'.
- */
-
-const express = require('express'); // Importa el paquete express
-const router = express.Router(); // Crea un enrutador de express
-
-const multer = require('multer'); // Importa el paquete multer para gestionar la carga de archivos
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const fs = require('fs');
 
 // Configuración de almacenamiento para multer
 const storage = multer.diskStorage({
@@ -20,11 +13,29 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage }); // Configura multer con la opción de almacenamiento definida
+const upload = multer({ storage: storage });
 
 // Ruta POST para manejar la subida de archivos
-router.post('/', upload.single('file'), (req, res) => {
-    res.send('Archivo subido correctamente'); // Envía una respuesta al cliente indicando que el archivo se ha subido correctamente
+router.put('/', upload.single('file'), (req, res) => {
+    try {
+        const fileContent = fs.readFileSync(req.file.path);
+        const base64Data = fileContent.toString('base64');
+        fs.unlinkSync(req.file.path); // Elimina el archivo subido después de la conversión
+
+        // Guardar el contenido base64 en un archivo plano
+        fs.writeFileSync('prueba.txt', base64Data, 'base64');
+
+        res.send('Archivo guardado correctamente.'); // Envía una respuesta exitosa
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al procesar el archivo.'); // Envía una respuesta de error
+    }
+
+    // Lee el contenido del archivo 'output.txt' de forma síncrona
+const fileContent = fs.readFileSync('output.txt', 'utf8');
+
+// Muestra el contenido en la consola
+console.log(fileContent);
 });
 
-module.exports = router; // Exporta el enrutador para su uso en otros módulos
+module.exports = router;

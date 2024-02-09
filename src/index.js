@@ -19,6 +19,7 @@ app.set('json spaces', 2); // Establece la cantidad de espacios para formatear J
 
 
 
+
 // Middleware
 app.use(morgan('dev')); // Utiliza el middleware morgan para registrar solicitudes HTTP en la consola
 app.use(express.json()); // Middleware para analizar solicitudes con formato JSON
@@ -30,6 +31,8 @@ app.use(require('./routes/index')); // Ruta principal
 app.use('/api/Empleados', require('./routes/Empleados')); // Ruta para gestionar empleados
 app.use('/api/user', require('./routes/user')); // Ruta para gestionar usuarios
 app.use('/api/Upload', require('./routes/Upload')); // Ruta para cargar archivos
+
+
 
 
 
