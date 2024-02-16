@@ -64,7 +64,7 @@ router.delete('/:id', (req, res) => {
 
     
 // Ruta para subir un archivo
-    router.post('/upload', upload.single('upload'), function (req, res, next) {
+    router.post('/uploads', upload.single('upload'), function (req, res, next) {
         
         res.send('Archivo subido correctamente');
     });
