@@ -73,5 +73,21 @@ router.delete('/:id', (req, res) => {
 
 
 
+// Ruta para manejar las solicitudes GET a /api/uploads/Descargas
+router.get('/Descargas', (req, res) => {
+    const filePath = '.Descargas/archivo.pdf'; // Ruta del archivo que deseas descargar
+
+    // Verificar si el archivo existe
+    if (fs.existsSync(filePath)) {
+        // Si el archivo existe, enviarlo como respuesta
+        res.sendFile(filePath);
+    } else {
+        // Si el archivo no existe, enviar una respuesta de error 404
+        res.status(404).send('Archivo no encontrado');
+    }
+});
+
+
+
 module.exports = router;
 

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Configuración del documento -->
+    <meta charset="UTF-8"> <!-- Codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configuración de la vista para dispositivos móviles -->
+    <title>Convertir Texto a PDF</title> <!-- Título de la página -->
+
+    <!-- Importación de bibliotecas externas -->
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script> <!-- jQuery para manejar eventos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js"></script> <!-- PDF.js para trabajar con archivos PDF -->
+</head>
+<body>
+    <!-- Botón para convertir a PDF -->
+    <button id="convertButton">Convertir a PDF</button>
+
+    <!-- Lienzo para mostrar el PDF -->
+    <canvas id="pdfViewer" style="display: none;"></canvas>
+
+    <!-- Script JavaScript -->
+    <script>
+        $(document).ready(function() {
+            // Evento click del botón de conversión
+            $('#convertButton').click(function() {
+                // Realizar una solicitud AJAX para obtener el contenido Base64 del archivo de texto
+                $.ajax({
+                    url: 'http://localhost:8080/vamos_DN.txt', // URL del servidor para obtener el archivo de texto en Base64
+                    dataType: 'text', // Tipo de datos esperados en la respuesta
+                    success: function(textContent) {
+                        // Separar la metadata del contenido Base64
+                        const base64Data = textContent.split(',')[1];
+                        // Llamar a la función para mostrar el PDF
+                        displayPDF(base64Data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al cargar el archivo de texto:', error);
+                    }
+                });
+            });
+
+          // Función para mostrar el PDF
+function displayPDF(base64Data) {
+    // Obtener el elemento canvas para mostrar el PDF
+    const pdfViewer = document.getElementById('pdfViewer');
+    
+    // Convertir la cadena Base64 en un ArrayBuffer
+    const binaryString = window.atob(encodeURIComponent(base64Data).replace(/%([0-9A-F]{2})/g,
+        function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1);
+        }));
+
+    const length = binaryString.length;
+    const bytes = new Uint8Array(length);
+
+    for (let i = 0; i < length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    // Crear un Blob a partir de los datos binarios
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+
+    // Crear una URL a partir del Blob
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Establecer la URL como origen del visor de PDF
+    pdfViewer.src = blobUrl;
+    pdfViewer.style.display = 'block'; // Mostrar el visor de PDF
+}
+
+        });
+    </script>
+</body>
+</html>

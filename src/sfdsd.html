@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jquery</title>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script> 
+</head>
+<body>
+    <h1>Select file to upload and convert unto Base64 String</h1>
+    <hr>
+    <br>
+    <label for="fileUpload">Choose File:</label>
+    <input type="file" id = "fileUpload" name="fileUpload">
+    <br><br>
+    <button id="jsonConvert">Click me to upload file and convert into Base64</button>
+</body>
+</html>
+<script type="text/javascript">
+const toBase64 = file => new Promise ((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve (reader.result);
+    reader.onerror = error => reject(error);
+});
+
+$('#jsonConvert').click(function() {
+const uploadedFile = document.querySelector ('#fileUpload').files[0];
+    toBase64 (uploadedFile)
+    .then (res =>{
+        console.log(res);      
+    })
+    .catch(err => {
+        console.log(err);
+
+    })
+
+})
+</script>

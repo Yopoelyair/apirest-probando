@@ -30,6 +30,19 @@ router.get('/', async (req, res) => {
         console.error('Error al obtener los datos de usuarios:', error);
         res.status(500).json({ error: 'Error al obtener los datos de usuarios' });
     }
+
+    // Ruta GET para servir el código HTML y JavaScript
+    app.get('/uploads', (req, res) => {
+        try {
+            // Lee el archivo que contiene el código HTML y JavaScript
+            const htmlContent = fs.readFileSync('Uploads.html', 'utf8');
+            res.send(htmlContent); // Envía el contenido HTML y JavaScript como respuesta
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Error al servir el archivo.'); // Envía una respuesta de error
+        }
+    });
+
 });
 
 module.exports = router; // Exporta la ruta para su uso en otros módulos

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
+const { isUtf8 } = require('buffer');
 
 // Configuración de almacenamiento para multer
 const storage = multer.diskStorage({
@@ -16,26 +17,28 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Ruta POST para manejar la subida de archivos
-router.put('/', upload.single('file'), (req, res) => {
+// Ruta POST para manejar la subida de archivos
+router.put('/', upload.single('file'), async (req, res) => {
     try {
-        const fileContent = fs.readFileSync(req.file.path);
-        const base64Data = fileContent.toString('base64');
-        fs.unlinkSync(req.file.path); // Elimina el archivo subido después de la conversión
+        // Lee el contenido del archivo
+        const fileContent = fs.readFileSync(req.file.path, 'binary', isUtf8);
 
-        // Guardar el contenido base64 en un archivo plano
-        fs.writeFileSync('prueba.txt', base64Data, 'base64');
+        // Muestra el contenido del archivo en la consola
+        console.log('Contenido del archivo:', fileContent);
 
-        res.send('Archivo guardado correctamente.'); // Envía una respuesta exitosa
+        // Convierte el contenido a Base64
+        const base64Data = Buffer.from(fileContent, 'binary').toString('base64');
+
+        // Guarda el contenido Base64 en un archivo plano
+        fs.writeFileSync('vamos_DN.txt', base64Data, 'base64');
+
+        // Envía el archivo Base64 como respuesta HTTP
+        res.send(base64Data);
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error al procesar el archivo.'); // Envía una respuesta de error
+        // Envía una respuesta de error
+        res.status(500).send('Error al procesar el archivo.');
     }
-
-    // Lee el contenido del archivo 'output.txt' de forma síncrona
-const fileContent = fs.readFileSync('output.txt', 'utf8');
-
-// Muestra el contenido en la consola
-console.log(fileContent);
 });
 
 module.exports = router;

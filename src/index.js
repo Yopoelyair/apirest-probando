@@ -11,6 +11,7 @@ const express = require('express'); // Importa el paquete express
 const multer = require('multer'); // Importa el paquete multer para gestionar archivos
 const app = express(); // Crea una nueva instancia de la aplicación Express
 const morgan = require('morgan'); // Importa el paquete morgan para el registro de solicitudes HTTP
+const cors = require('cors');
 
 
 // Configuración de la aplicación
@@ -24,6 +25,8 @@ app.set('json spaces', 2); // Establece la cantidad de espacios para formatear J
 app.use(morgan('dev')); // Utiliza el middleware morgan para registrar solicitudes HTTP en la consola
 app.use(express.json()); // Middleware para analizar solicitudes con formato JSON
 app.use(express.urlencoded({extended: false})); // Middleware para analizar solicitudes con datos codificados en URL
+app.use(express.static('public'));
+app.use(cors());
 
 
 // Rutas de la aplicación

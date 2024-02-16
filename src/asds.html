@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertir Base64 a PDF</title>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+</head>
+<body>
+    <input type="file" id="fileInput">
+    <button id="convertButton">Enviar Mail</button>
+    <embed id="pdfViewer" width="100%" height="600px" style="display: none;"></embed>
+
+    <script>
+        $(document).ready(function() {
+            $('#convertButton').click(function() {
+                const fileInput = document.getElementById('fileInput');
+                const file = fileInput.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(event) {
+                        const base64Data = event.target.result.split(',')[1]; // Obtener solo el contenido base64 sin la metadata
+                        displayPDF(base64Data);
+                        sendEmail(base64Data); // Llama a la función para enviar el correo electrónico
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Por favor selecciona un archivo.');
+                }
+            });
+
+            function displayPDF(base64Data) {
+                const pdfViewer = document.getElementById('pdfViewer');
+                pdfViewer.src = 'data:application/pdf;base64,' + base64Data;
+                pdfViewer.style.display = 'block'; // Mostrar el visor de PDF
+            }
+
+            function sendEmail(base64Data) {
+                Email.send({
+                    Host: "smtp.gmail.com",
+                    Username: "alexyose09@gmail.com",
+                    Password: "dzjsblbfxogyukhh",
+                    To: 'yosealex09@gmail.com',
+                    From: "alexyose09@gmail.com",
+                    Subject: "Documento PDF Adjunto",
+                    Body: "Se adjunta el documento PDF generado.",
+                    Attachments: [
+                        {
+                            name: "documento.pdf",
+                            data: base64Data
+                        }
+                    ]
+                }).then(
+                    message => alert("El correo electrónico se ha enviado correctamente.")
+                );
+            }
+        });
+    </script>
+</body>
+</html>
