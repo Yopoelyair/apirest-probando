@@ -11,6 +11,10 @@ const { Router } = require('express');
 const router = Router();
 const _ = require('underscore');
 const fs = require('fs');
+const upload = require('./multerConfig');
+
+
+
 
 
 // Se carga la lista de empleados desde un archivo JSON
@@ -20,6 +24,7 @@ const Empleados = require('../Sample.json');
 router.get('/', (req, res) => {
     res.json(Empleados); 
 });
+
 
 // Ruta para agregar un nuevo empleado
 router.post('/', (req, res) => {
@@ -62,6 +67,8 @@ router.delete('/:id', (req, res) => {
     });
     res.send(Empleados);
 
+});
+
     
 // Ruta para subir un archivo
     router.post('/uploads', upload.single('upload'), function (req, res, next) {
@@ -69,7 +76,7 @@ router.delete('/:id', (req, res) => {
         res.send('Archivo subido correctamente');
     });
 
-});
+
 
 
 
@@ -90,4 +97,3 @@ router.get('/Descargas', (req, res) => {
 
 
 module.exports = router;
-

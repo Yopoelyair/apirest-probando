@@ -16,9 +16,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Ruta POST para manejar la subida de archivos
-// Ruta POST para manejar la subida de archivos
-router.put('/', upload.single('file'), async (req, res) => {
+// Ruta PUT para manejar la subida de archivos
+router.post('/', upload.single('file'), async (req, res) => {
     try {
         // Lee el contenido del archivo
         const fileContent = fs.readFileSync(req.file.path, 'binary', isUtf8);
@@ -36,6 +35,7 @@ router.put('/', upload.single('file'), async (req, res) => {
         res.send(base64Data);
     } catch (err) {
         console.error(err);
+        
         // Envía una respuesta de error
         res.status(500).send('Error al procesar el archivo.');
     }
