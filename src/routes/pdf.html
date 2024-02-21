@@ -31,8 +31,8 @@
                     reader.onload = function(event) {
                         // Obtener el contenido base64 del archivo
                         const base64Data = event.target.result.split(',')[1];
-                        // Descargar el PDF
-                        downloadPDF(base64Data, file.name);
+                        // Abrir el PDF en una nueva ventana o pestaña con un nombre específico
+                        openPDFInNewTab(base64Data, file.name);
                     };
                     
                     // Leer el archivo como base64
@@ -42,13 +42,27 @@
                 }
             });
 
-            // Función para descargar el PDF
-            function downloadPDF(base64Data, fileName) {
-                // Crear un enlace <a> para descargar el PDF
-                const link = document.createElement('a');
-                link.href = 'data:application/pdf;base64,' + base64Data;
-                link.download = fileName + '.pdf';
-                link.click();
+            // Función para abrir el PDF en una nueva ventana o pestaña con un nombre específico
+            function openPDFInNewTab(base64Data, fileName) {
+                // Crear un objeto Blob a partir de los datos base64
+                const byteCharacters = atob(base64Data);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+                
+                // Crear una URL para el Blob
+                const blobUrl = URL.createObjectURL(blob);
+                
+                // Abrir el PDF en una nueva ventana o pestaña con el nombre específico
+                const newWindow = window.open(blobUrl, '_blank');
+                if (newWindow) {
+                    newWindow.document.title = fileName; // Asignar el nombre del archivo como título de la nueva ventana o pestaña
+                } else {
+                    alert('El bloqueador de ventanas emergentes ha impedido abrir la nueva ventana o pestaña.');
+                }
             }
         });
     </script>
