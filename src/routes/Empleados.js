@@ -12,6 +12,7 @@ const router = Router();
 const _ = require('underscore');
 const fs = require('fs');
 const upload = require('./multerConfig');
+const path = require('path');
 
 
 
@@ -93,6 +94,13 @@ router.get('/Descargas', (req, res) => {
         res.status(404).send('Archivo no encontrado');
     }
 });
+
+// Ruta GET para servir el HTML
+router.get('/pdf', (req, res) => {
+    // Utilizamos el método sendFile para enviar el archivo HTML
+    res.sendFile(path.join(__dirname, 'pdf.html'));
+});
+
 
 
 
